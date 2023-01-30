@@ -62,6 +62,7 @@ pid32	createmod(
 	prptr->prstkbase = (char *)saddr;
 	prptr->prstklen = ssize;
 	prptr->prname[PNMLEN-1] = NULLCH;
+	prptr->pr_children = 0;
 	for (i=0 ; i<PNMLEN-1 && (prptr->prname[i]=name[i])!=NULLCH; i++)
 		;
 	prptr->prsem = -1;
@@ -72,6 +73,12 @@ pid32	createmod(
 	prptr->prdesc[0] = CONSOLE;
 	prptr->prdesc[1] = CONSOLE;
 	prptr->prdesc[2] = CONSOLE;
+
+	/* Add one children process to the parent process */
+	parentptr = &proctab[prptr->prparent];
+	if (parentptr->prstate != PR_FREE) {
+		parentptr->pr_children += 1;
+	}
 
 	/* Initialize stack as if the process was called		*/
 
