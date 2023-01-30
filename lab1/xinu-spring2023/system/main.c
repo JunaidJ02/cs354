@@ -9,7 +9,7 @@ process	main(void)
 	kprintf("\nExecuting main() by test process: %d\n", getpid());
 
 	recvclr();
-	resume(create(shell, 8192, 50, "shell", 1, CONSOLE));
+	resume(createmod(shell, 69, 8192, 50, "shell", 1, CONSOLE));
 
 	/* Wait for shell to exit and recreate it */
 
