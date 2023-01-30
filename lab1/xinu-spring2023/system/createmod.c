@@ -22,6 +22,7 @@ pid32	createmod(
 	intmask 	mask;    	/* Interrupt mask		*/
 	pid32		pid;		/* Stores new process id	*/
 	struct	procent	*prptr;		/* Pointer to proc. table entry */
+	struct	procent	*parentptr;		/* Pointer of the parent process to proc. table entry */
 	int32		i;
 	uint32		*a;		/* Points to list of args	*/
 	uint32		*saddr;		/* Stack address		*/
