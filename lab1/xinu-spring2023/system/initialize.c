@@ -132,7 +132,7 @@ local process	startup(void)
 
 	/* Create a process to execute function main() */
 
-	resume(create((void *)main, INITSTK, INITPRIO,
+	resume(create((void *)main, INITSTK, 15,
 					"Main process", 0, NULL));
 
 	/* Startup process exits at this point */
