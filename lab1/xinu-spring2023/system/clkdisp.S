@@ -12,6 +12,7 @@ clkdisp:
 		cli			# Disable further interrupts
 		movb	$EOI,%al	# Reset interrupt
 		outb	%al,$OCW1_2
+		incl 	msclkcounter1
 
 		call	clkhandler	# Call high level handler
 

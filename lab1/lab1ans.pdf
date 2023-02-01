@@ -1,6 +1,38 @@
-1. The ret instruction is executed, which causes the return address (the address of INITRET) to be popped off the stack and loaded into the program counter.
-2. INITRET, which acts as a dummy function, starts running
-3. The INITRET function calls kill() on the process that is running, in this case it would be the process that returned normally
-The next two steps happen inside of the kill() function 
-4. The current process is removed from the process table, file discriptors are closed, and its memory is freed
-5. XINU scheduler is called so it can select a ready process to run next
+3.1(c):
+    1. The ret instruction is executed, which causes the return address (the address of INITRET) to be popped off the stack and loaded into the program counter.
+    2. INITRET, which acts as a dummy function, starts running
+    3. The INITRET function calls kill() on the process that is running, in this case it would be the process that returned normally
+    The next two steps happen inside of the kill() function 
+    4. The current process is removed from the process table, file discriptors are closed, and its memory is freed
+    5. XINU scheduler is called so it can select a ready process to run next
+
+3.2(a):
+    Code executed by the child process:
+        Xinu - the child process is created by calling create() with a function pointer to the code that should be executed by the child process. 
+        Linux - the child process is created by calling fork() and the child process will start executing the same code that was being executed by its parent process before the call to fork().
+    Priority:
+        XINU - the priority of the child process can be specified as an argument in the create() function
+        Linux - the child process inherits the priority of its parent process.
+    State:
+        XINU - the child process is created in the ready state and will be scheduled to run when XINU scheduler allows it to
+        Linux - the child process is created in a suspended/waiting state and must be explicitly resumed using exec() or wait()/waitpid()
+    Resource allocation:
+        XINU - the child process is created with its own stack, but shares some resources such as file descriptors with its parent process
+        Linux - the child process is created with its own resources. However, it first copies everything from the parents resources. This allows the child process to update the values without interfering with the parent process
+
+3.2(b):
+    When we have the priorty of the main function set to 15, then A will start printing forever. 
+    This is beacuse the priority for sndch(A) is 20 (higher than 15), meaning that it will take priority over the main function. This will not allow the main function to finish because sndch(A) is an infinite loop, meaning the sndch(B) process is never even created
+    If we change the priority of the main function to 23, this will allow main to finish fully, create processes for both sndch(A) and sndch(B), before any child processes start running because main will always have the higher priority. Doing this allows A and B to print simultaneously 
+
+
+4.1:
+    I created a helper function called printCounters() in main.c that continuously prints msclkcounter1 and msclkcounter2 forever. I then created a child process in main and gave the pointer to this function as the pointer argument. 
+    I then verify that the counters are the same by letting it run for a bit and then using ctrl-space to bring up xinu's command-mode. This stops the values from printing and I can see that msclkcounter1 is almost always the same as msclkcounter2.
+    There were a couple times where msclkcounter1 and msclkcounter2 wasn't the same, but even then the values were only off by like 2 or 3. 
+
+
+4.2:
+    If we set the QUANTUM to 15, which would also set the global variable `preempt` to 15. preempt is decremented on each clock interrupt aka 1 ms. When preempt gets to 0, resched() is called and preempt is reset to QUANTUM, 15.
+    This means that resched() is now being called every 15ms instead of every 2ms. This allows processes with the same priority to run for 15 ms before having to give up the cpu to another process. 
+    For our example of print A and B, this would mean that sndch(A) now runs for 15ms before switching to sndch(B). We can see this in the output becasue there are more A's being printed before B starts printing and vice versa. (Ex: Before - AAABBBAAABBB, Now - AAAAAAAABBBBBBBBAAAAAAAABBBBBBBB, a bit exaggerated to get the point across)

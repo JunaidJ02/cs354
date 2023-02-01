@@ -21,7 +21,6 @@ pid32	create(
 	intmask 	mask;    	/* Interrupt mask		*/
 	pid32		pid;		/* Stores new process id	*/
 	struct	procent	*prptr;		/* Pointer to proc. table entry */
-	struct	procent	*parentptr;		/* Pointer of the parent process to proc. table entry */
 	int32		i;
 	uint32		*a;		/* Points to list of args	*/
 	uint32		*saddr;		/* Stack address		*/
@@ -35,7 +34,6 @@ pid32	create(
 		restore(mask);
 		return SYSERR;
 	}
-
 	prcount++;
 	prptr = &proctab[pid];
 
@@ -45,7 +43,6 @@ pid32	create(
 	prptr->prstkbase = (char *)saddr;
 	prptr->prstklen = ssize;
 	prptr->prname[PNMLEN-1] = NULLCH;
-	prptr->pr_children = 0;
 	for (i=0 ; i<PNMLEN-1 && (prptr->prname[i]=name[i])!=NULLCH; i++)
 		;
 	prptr->prsem = -1;
@@ -56,12 +53,6 @@ pid32	create(
 	prptr->prdesc[0] = CONSOLE;
 	prptr->prdesc[1] = CONSOLE;
 	prptr->prdesc[2] = CONSOLE;
-
-	/* Add one children process to the parent process */
-	parentptr = &proctab[prptr->prparent];
-	if (parentptr->prstate != PR_FREE) {
-		parentptr->pr_children += 1;
-	}
 
 	/* Initialize stack as if the process was called		*/
 

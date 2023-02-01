@@ -1,6 +1,9 @@
 /* clkhandler.c - clkhandler */
 
 #include <xinu.h>
+// #include <clkinit.c>
+
+extern int msclkcounter2;
 
 /*------------------------------------------------------------------------
  * clkhandler - high level clock interrupt handler
@@ -9,6 +12,8 @@
 void	clkhandler()
 {
 	static	uint32	count1000 = 1000;	/* Count to 1000 ms	*/
+
+	msclkcounter2++;
 
 	/* Decrement the ms counter, and see if a second has passed */
 

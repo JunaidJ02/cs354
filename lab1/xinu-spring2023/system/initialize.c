@@ -86,7 +86,6 @@ void	nulluser()
 	mymotd();
 
 	/* Create a process to finish startup and start main */
-
 	resume(create((void *)startup, INITSTK, INITPRIO,
 					"Startup process", 0, NULL));
 
@@ -131,8 +130,7 @@ local process	startup(void)
 	//}
 
 	/* Create a process to execute function main() */
-
-	resume(create((void *)main, INITSTK, 15,
+	resume(create((void *)main, INITSTK, 23,
 					"Main process", 0, NULL));
 
 	/* Startup process exits at this point */
