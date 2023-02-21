@@ -1,3 +1,8 @@
+/* Junaid's additions */
+
+/* in file mymotd.c */
+extern	void	mymotd(void);
+
 /* in file addargs.c */
 extern	status	addargs(pid32, int32, int32[], int32,char *, void *);
 
@@ -299,9 +304,6 @@ extern	bpid32	mkbufpool(int32, int32);
 /* in file mount.c */
 extern	syscall	mount(char *, char *, did32);
 extern	int32	namlen(char *, int32);
-
-/* in file mymotd.c */
-extern 	void	mymotd(void);
 
 /* in file naminit.c */
 extern	status	naminit(void);

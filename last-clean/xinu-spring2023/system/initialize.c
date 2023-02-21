@@ -83,12 +83,12 @@ void	nulluser()
 
 	//net_init();
 
-	mymotd();
-	kprintf("\nExecuting nulluser() by test process: %d\n", getpid());
 	/* Create a process to finish startup and start main */
 
 	resume(create((void *)startup, INITSTK, INITPRIO,
 					"Startup process", 0, NULL));
+
+	mymotd();
 
 	/* Become the Null process (i.e., guarantee that the CPU has	*/
 	/*  something to run when no other process is ready to execute)	*/
@@ -131,7 +131,7 @@ local process	startup(void)
 	//}
 
 	/* Create a process to execute function main() */
-	kprintf("\nExecuting startup() by test process: %d\n", getpid());
+
 	resume(create((void *)main, INITSTK, INITPRIO,
 					"Main process", 0, NULL));
 

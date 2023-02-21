@@ -17,6 +17,8 @@
 #define	PR_WAIT		6	/* Process is on semaphore queue	*/
 #define	PR_RECTIM	7	/* Process is receiving with timeout	*/
 
+
+
 /* Miscellaneous process definitions */
 
 #define	PNMLEN		16	/* Length of process "name"		*/

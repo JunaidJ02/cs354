@@ -1,6 +1,9 @@
 /* in file addargs.c */
 extern	status	addargs(pid32, int32, int32[], int32,char *, void *);
 
+/* in file addtwo.S */
+extern	int	addtwo(int, int);
+
 /* in file arp.c */
 extern	void	arp_init(void);
 extern	status	arp_resolve(uint32, byte[]);
@@ -298,11 +301,18 @@ extern	int32	*memcmp(void *, const void *, int32);
 /* in file memset.c */
 extern  void    *memset(void *, const int, int32);
 
+/* in file mintwo.S */
+extern	int	mintwo(int, int);
+
 /* in file mkbufpool.c */
 extern	bpid32	mkbufpool(int32, int32);
 
 /* in file mount.c */
 extern	syscall	mount(char *, char *, did32);
+
+/* in file testmulthree.S */
+extern	int	testmulthree(int, int, int);
+
 extern	int32	namlen(char *, int32);
 
 /* in file mymotd.c */
