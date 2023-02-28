@@ -558,58 +558,101 @@ _Xint45:
 
 	.globl _Xint46			/* available for ext. interrupt	*/
 _Xint46:
-	/* Add EIP to stack */
-	addl $4, %esp
-	movl (%esp), %edx
-	movl %edx, global_kaddr-4
 
-	/* Add CS to stack */
-	addl $4, %esp
-	movl (%esp), %edx
-	movl %edx, global_kaddr-8
+	/* Get EIP */
+	popl %edx
+	movl %edx, (global_kaddr-4)
 
-	/* Add flags to stack */
-	addl $4, %esp
-	movl (%esp), %edx
-	movl %edx, global_kaddr-12
+	/* Get CS */
+	popl %edx
+	movl %edx, (global_kaddr-8)
 
-	/* Subtract to return to original location */
-	subl $12, %esp
+	/* Get EFLAGS */
+	popl %edx
+	movl %edx, (global_kaddr-12)
 
 	/* Keep track of where the user stack is */
 	movl %esp, (global_uaddr)
 
-	/* Move to the kernal stack */
+	/* Move to the top of kernal stack */
 	movl global_kaddr-12, %esp
 
-	/*  */
+	/*  Branch to childrennum() */
 	cmpl $10, %eax 
 	je xchildrennum_handler
 
+	/*  Branch to chprio() */
 	cmpl $14, %eax 
 	je xchprio_handler
 
-	cmpl $18, %eax 
+	/*  Branch to sleepms() */
+	cmpl $18, %eax
 	je xsleepms_handler
 
-    xchildrennum_handler:
-		pushl %ebx
-        call childrennum
-		movl (global_uaddr), %esp
-        iret
+	/*  Branch to kill() */
+	cmpl $22, %eax
+	je xkill_handler
 
-	xchprio_handler:
-		pushl %ebx
-		pushl %ecx
-        call chprio
-		movl (global_uaddr), %esp
-        iret
+xchildrennum_handler:
+	/* Push the argument onto the stack */
+	pushl %ebx
 
-	xsleepms_handler:
-		pushl %ebx
-        call sleepms
-		movl (global_uaddr), %esp
-        iret
+	/* Call function */
+	call childrennum
+
+	/* Untrap */
+	jmp untrap
+
+
+xchprio_handler:
+	/* Push the arguments onto the stack */
+	pushl %ebx
+	pushl %ecx
+
+	/* Call function */
+	call chprio
+	
+	/* Untrap */
+	jmp untrap
+
+xsleepms_handler:
+	/* Push the argument onto the stack */
+	pushl %ebx
+	
+	/* Call function */
+	call sleepms
+	
+	/* Untrap */
+	jmp untrap
+
+xkill_handler:
+	/* Push the argument onto the stack */
+	pushl %ebx
+	
+	/* Call function */
+	call kill
+	
+	/* Untrap */
+	jmp untrap
+
+untrap:
+	/* Switch back to user stack */
+	movl (global_uaddr), %esp
+
+	/* Reset EFLAGS back to its original value */
+	movl (global_kaddr-12), %edx
+	pushl %edx
+
+	/* Reset CS back to its original value */
+	movl (global_kaddr-8), %edx
+	pushl %edx
+
+	/* Reset EIP back to its original value */
+	movl (global_kaddr-4), %edx
+	pushl %edx
+
+	/* Enable interrupts and return */
+	iret
 
 /*------------------------------------------------------------------------
  * _Xint? - array of exception/interrupt entry points that are

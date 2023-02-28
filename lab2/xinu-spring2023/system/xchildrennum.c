@@ -10,7 +10,7 @@ syscall xchildrennum(pid32 pid) {
         "int $46;\n\t"
         "movl %%eax, %0;\n\t"
         : "=m" (retval)
-        : "g" (pid), "g" (10)
+        : "g" (pid), "g" (SYSCHLN)
         : "eax", "ebx");
     return retval;
 }

@@ -9,7 +9,7 @@ syscall xsleepms(int32	delay) {
         "int $46;\n\t"
         "movl %%eax, %0;\n\t"
         : "=m" (retval)
-        : "g" (delay), "g" (18)
+        : "g" (delay), "g" (SYSSLP)
         : "eax", "ebx");
     return retval;
 }

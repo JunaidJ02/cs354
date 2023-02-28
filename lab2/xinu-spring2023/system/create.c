@@ -5,6 +5,9 @@
 local	int newpid();
 char *global_kaddr;
 char *global_uaddr;
+char *kernal_eflags;
+char *kernal_eip;
+char *kernal_cs;
 
 /*------------------------------------------------------------------------
  *  create  -  Create a process to start running a function on x86
@@ -38,7 +41,7 @@ pid32	create(
 	if ( (priority < 1) || ((pid=newpid()) == SYSERR) ||
 	     ((saddr = (uint32 *)getstk(ssize)) == (uint32 *)SYSERR) ||
 		 ((kaddr = (uint32 *)getstk(16000)) == (uint32 *)SYSERR) ||
-		 ((uaddr = (uint32 *) getstk(100 * sizeof(char))) == (uint32 *)SYSERR)) {
+		 ((uaddr = (uint32 *) getstk(1600)) == (uint32 *)SYSERR)) {
 		restore(mask);
 		return SYSERR;
 	}

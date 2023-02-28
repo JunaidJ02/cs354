@@ -30,6 +30,9 @@
 #define	INITPRIO	20	/* Initial process priority		*/
 #define	INITRET		userret	/* Address to which process returns	*/
 
+// #define XINUTEST
+// #define XINUDEBUG
+
 /* Inline code to check process ID (assumes interrupts are disabled)	*/
 
 #define	isbadpid(x)	( ((pid32)(x) < 0) || \

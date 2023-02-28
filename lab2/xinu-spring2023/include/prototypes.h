@@ -13,6 +13,15 @@ extern	void divzero2(void);
 /* in file xchildrennum.c */
 extern	syscall xchildrennum(pid32 pid);
 
+/* in file xchildrennum.c */
+extern	syscall xchildrennum(pid32 pid);
+
+/* in file xchprio.c */
+syscall xchprio(pid32 pid, pri16 newprio);
+
+/* in file xsleepms.c */
+extern	syscall xsleepms(int32	delay);
+
 /* in file arp.c */
 extern	void	arp_init(void);
 extern	status	arp_resolve(uint32, byte[]);
@@ -102,7 +111,6 @@ extern int remove_irm_protections(void);
 /* in file evec.c */
 extern	int32	initevec(void);
 extern	int32	set_evec(uint32, uint32);
-extern	void	trap(int32, long *);
 
 /* in file exception.c */
 extern  void exception(int32, int32*);

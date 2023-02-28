@@ -28,26 +28,25 @@ syscall	sleepms(
 	)
 {
 	intmask	mask;			/* Saved interrupt mask		*/
-	kprintf("going to sleep\n");
+
 	if (delay < 0) {
 		return SYSERR;
 	}
-	kprintf("going to sleep1\n");
+	
 	if (delay == 0) {
 		yield();
 		return OK;
 	}
-	kprintf("going to sleep2\n");
+	
 	/* Delay calling process */
 
-	// mask = disable();
+	mask = disable();
 	if (insertd(currpid, sleepq, delay) == SYSERR) {
-		// restore(mask);
+		restore(mask);
 		return SYSERR;
 	}
-	kprintf("going to sleep3\n");
 	proctab[currpid].prstate = PR_SLEEP;
 	resched();
-	// restore(mask);
+	restore(mask);
 	return OK;
 }
