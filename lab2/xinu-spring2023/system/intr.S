@@ -558,7 +558,6 @@ _Xint45:
 
 	.globl _Xint46			/* available for ext. interrupt	*/
 _Xint46:
-
 	/* Get EIP */
 	popl %edx
 	movl %edx, (global_kaddr-4)
@@ -613,7 +612,7 @@ xchprio_handler:
 	call chprio
 	
 	/* Untrap */
-	jmp untrap
+	jmp untrap	
 
 xsleepms_handler:
 	/* Push the argument onto the stack */
@@ -650,7 +649,7 @@ untrap:
 	/* Reset EIP back to its original value */
 	movl (global_kaddr-4), %edx
 	pushl %edx
-
+	
 	/* Enable interrupts and return */
 	iret
 

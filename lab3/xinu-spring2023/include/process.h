@@ -22,6 +22,10 @@
 #define	PNMLEN		16	/* Length of process "name"		*/
 #define	NULLPROC	0	/* ID of the null process		*/
 
+#define STOPPINGTIME	8000
+// #define XINUTEST
+// #define XINUDEBUG 1
+
 /* Process initialization constants */
 
 #define	INITSTK		65536	/* Initial process stack size		*/
@@ -56,6 +60,7 @@ struct procent {		/* Entry in the process table		*/
 	uint32 	prresptime; /* Sums the total time a process has spent since its creation in the readylist */
 	uint32 	prctxswcount; /* Counts how many times a process was context-switched */
 	uint32 	prbeginready; /* Current time since bootloading a backend machine */
+	uint32	prquantum;
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

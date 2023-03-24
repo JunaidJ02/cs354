@@ -29,9 +29,17 @@ syscall	sleepms(
 {
 	intmask	mask;			/* Saved interrupt mask		*/
 
+	struct	procent	*prptr;	
+	prptr = &proctab[getpid()];
+
 	if (delay < 0) {
 		return SYSERR;
 	}
+
+	#if DYNSCHEDENABLE == 1
+		/* IO Bound process */
+		prptr->prprio = xdynprio[prptr->prprio].xslpret;
+	#endif
 
 	if (delay == 0) {
 		yield();
@@ -46,7 +54,7 @@ syscall	sleepms(
 		return SYSERR;
 	}
 
-	proctab[currpid].prstate = PR_SLEEP;
+	prptr->prstate = PR_SLEEP;
 	resched();
 	restore(mask);
 	return OK;

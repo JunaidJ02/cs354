@@ -26,6 +26,11 @@ pid32	create(
 	uint32		*saddr;		/* Stack address		*/
 
 	mask = disable();
+
+	#if DYNSCHEDENABLE == 1
+		priority = 3;
+	#endif	
+
 	if (ssize < MINSTK)
 		ssize = MINSTK;
 	ssize = (uint32) roundmb(ssize);
@@ -39,7 +44,8 @@ pid32	create(
 	prptr = &proctab[pid];
 
 	/* Initialize process table entry for new process */
-	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/
+	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/	
+
 	prptr->prprio = priority;
 	prptr->prstkbase = (char *)saddr;
 	prptr->prstklen = ssize;
@@ -58,7 +64,7 @@ pid32	create(
 	prptr->prcpu = 0;
 	prptr->prresptime = 0;
 	prptr->prctxswcount = 0;
-	
+	prptr->prquantum = 0;
 
 	/* Initialize stack as if the process was called		*/
 

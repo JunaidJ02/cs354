@@ -21,6 +21,8 @@ struct	procent	proctab[NPROC];	/* Process table			*/
 struct	sentry	semtab[NSEM];	/* Semaphore table			*/
 struct	memblk	memlist;	/* List of free memory blocks		*/
 
+struct xsched_tab xdynprio[6]; /* XINU Dyanmic scheduler */
+
 /* Active system status */
 
 int	prcount;		/* Total number of live processes	*/
@@ -199,6 +201,19 @@ static	void	sysinit()
 	prptr->prstklen = NULLSTK;
 	prptr->prstkptr = 0;
 	currpid = NULLPROC;
+
+	#if DYNSCHEDENABLE == 1
+		xdynprio[0].xtqexp = 0;
+		xdynprio[0].xslpret = 0;
+		xdynprio[0].xquantum = QUANTUM;
+
+		int index;
+		for (index = 1; index < 6; index++) {
+			xdynprio[index].xtqexp = max(1, index - 1);
+			xdynprio[index].xslpret = min(5, index + 1);
+			xdynprio[index].xquantum = 60 - (10 * index);
+		}
+	#endif
 	
 	/* Initialize semaphores */
 

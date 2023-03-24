@@ -1,4 +1,12 @@
 extern 	void 	mymotd(void);
+extern	syscall cpuusage(pid32 pid);
+extern 	void 	cpubnd(void);
+extern 	void 	iobnd(void);
+extern	void 	chameleon(void);
+extern 	void 	iobnd9(void);
+
+extern uint16 max(uint16 first, uint16 second);
+extern uint16 min(uint16 first, uint16 second);
 
 /* in file addargs.c */
 extern	status	addargs(pid32, int32, int32[], int32,char *, void *);

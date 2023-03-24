@@ -3,7 +3,7 @@
 #include <xinu.h>
 
 struct	defer	Defer;
-extern int msclkcounter2;
+volatile extern int msclkcounter2;
 volatile extern uint32 currcpu;
 
 /*------------------------------------------------------------------------
@@ -23,37 +23,57 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	}
 
 	/* Point to process table entry for the current (old) process */
-
 	ptold = &proctab[currpid];
 
-	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */
+	if (ptold->prstate == PR_CURR)	 { 
+		/* Process remains eligible */
 		if (ptold->prprio > firstkey(readylist)) {
+			/* Reset preempt to how long this proccess deserves */
+			#if DYNSCHEDENABLE == 1
+				preempt = xdynprio[ptold->prprio].xquantum;
+			#endif
 			return;
 		}
 
-		/* Old process will no longer remain current */
+		/* Save the quantum if there is any left */
+			if (preempt != 0) {
+				ptold->prquantum = preempt;
+			}
 
+		/* Old process will no longer remain current */	
 		ptold->prstate = PR_READY;
+		ptold->prbeginready = msclkcounter2;
 		insert(currpid, readylist, ptold->prprio);
 	}
 
-	/* Force context switch to highest priority ready process */
+	/* Update prcpu */
+	ptold->prcpu = ptold->prcpu + currcpu;
 
+	/* Force context switch to highest priority ready process */
 	currpid = dequeue(readylist);
 	ptnew = &proctab[currpid];
 	ptnew->prstate = PR_CURR;
-	preempt = QUANTUM;		/* Reset time slice for process	*/
-	int timeDiff = msclkcounter2 - ptnew->prbeginready;
-	ptnew->prresptime = timeDiff == 0 ? 1 : timeDiff;
-	/* Update prcpu */
-	ptold->prcpu = ptold->prcpu + currcpu;
-	currcpu = 0;
+	
+	ptnew->prresptime += (msclkcounter2 - ptnew->prbeginready == 0 ? 1 : msclkcounter2 - ptnew->prbeginready);
+
+	preempt = QUANTUM;
+	#if DYNSCHEDENABLE == 1
+		/* If a process with higher priorty took over this process before, give the timeslice it had left back*/
+		if (ptnew->prquantum != 0) {
+			preempt = ptnew->prquantum;
+			ptnew->prquantum = 0;
+		} else {
+			preempt = xdynprio[ptnew->prprio].xquantum;		/* Reset time slice for process	*/
+		}
+	#endif
+
 	/* Update prctxswcount */
 	ptnew->prctxswcount++;
+	currcpu = 0;
+
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
 
 	/* Old process returns here when resumed */
-
 	return;
 }
 

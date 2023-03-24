@@ -3,6 +3,9 @@
 #include <xinu.h>
 
 void test(void);
+void repeat2(void);
+void repeat1(void);
+
 void testDivzero1(void);
 void testDivzero2(void);
 void testChildrenNum(void);
@@ -39,6 +42,10 @@ void testKill(void) {
 	pid32 process2 = create((void *)testKillHelper, INITSTK, 10, "test process", 0, NULL);
 	pid32 process3 = create((void *)testKillHelper, INITSTK, 10, "test process", 0, NULL);
 	pid32 process4 = create((void *)testKillHelper, INITSTK, 10, "test process", 0, NULL);
+
+	
+
+
 
 	/* Kill all test processes */
 	xkill(process1);
@@ -134,6 +141,16 @@ void testSleepms(void) {
 
 void test(void) {
 	return;
+}
+
+void repeat1(void) {
+	sleepms(10000);
+	kprintf("woke 1");
+}
+
+void repeat2(void) {
+	sleepms(10000);
+	kprintf("woke 2");
 }
 
 void testKillHelper(void) {

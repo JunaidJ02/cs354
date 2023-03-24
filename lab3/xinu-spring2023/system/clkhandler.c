@@ -7,7 +7,7 @@
  *------------------------------------------------------------------------
  */
 
-extern int msclkcounter2;
+volatile extern int msclkcounter2;
 volatile extern uint32 currcpu;
 void	clkhandler()
 {
@@ -44,7 +44,13 @@ void	clkhandler()
 	/*   remaining time reaches zero			     */
 
 	if((--preempt) <= 0) {
-		preempt = QUANTUM;
+		struct	procent	*prptr;
+    	prptr = &proctab[getpid()];
+		#if DYNSCHEDENABLE == 1
+			prptr->prprio = xdynprio[prptr->prprio].xtqexp;
+		#else
+			preempt = QUANTUM;
+		#endif
 		resched();
 	}
 }
