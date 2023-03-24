@@ -85,6 +85,8 @@ void	nulluser()
 
 	/* Create a process to finish startup and start main */
 
+	mymotd();
+
 	resume(create((void *)startup, INITSTK, INITPRIO,
 					"Startup process", 0, NULL));
 
