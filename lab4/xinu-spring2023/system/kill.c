@@ -34,12 +34,18 @@ syscall	kill(
 	switch (prptr->prstate) {
 	case PR_CURR:
 		prptr->prstate = PR_FREE;	/* Suicide */
-		struct	procent *parentptr;
-		parentptr = &proctab[prptr->prparent];
-		if (parentptr->prchildstatus[pid] == 2) {
-			prptr->prstate = PR_READY;
-			ready(prptr->prparent);
-			parentptr->prchildstatus[pid] == 4;
+		/* Check that the parent is not the null process */
+		if (prptr->prparent != 0) {
+			/* Get the parent process */
+			struct	procent *parentptr;
+			parentptr = &proctab[prptr->prparent];
+			/* If the parent is waiting on the child to finish*/
+			if (parentptr->prchildstatus[pid] == 2) {
+				/* Ready the parent process */
+				ready(prptr->prparent);
+				/* Set the status of the child process to 4, terminated */
+				parentptr->prchildstatus[pid] == 4;
+			}
 		}
 		resched();
 
