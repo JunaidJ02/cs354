@@ -3,19 +3,19 @@
 #include <xinu.h>
 
 void wasteTime(void);
-void test(void);
+void testXChildWaitBlocking(void);
 
 process	main(void)
 {
 	recvclr();
-	resume(create(test, INITSTK, 16, "Child process", 0));
+	resume(create(testXChildWaitBlocking, INITSTK, 16, "Child process", 0));
 
 	return OK;
     
 }
 
-
-void test(void) {
+/* Passes */
+void testXChildWaitBlocking(void) {
 	/* Create a child process */
 	pid32 childProcess = create(wasteTime, INITSTK, 15, "Child process", 0);
 	/* Call xchildwait() as a blocking call and pass in the created child processes PID */
