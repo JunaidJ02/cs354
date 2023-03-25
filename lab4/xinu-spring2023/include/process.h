@@ -16,6 +16,8 @@
 #define	PR_SUSP		5	/* Process is suspended			*/
 #define	PR_WAIT		6	/* Process is on semaphore queue	*/
 #define	PR_RECTIM	7	/* Process is receiving with timeout	*/
+#define PR_CHLDWAIT	8	/* Process is blocking from xchildwait() */
+
 
 /* Miscellaneous process definitions */
 
@@ -52,6 +54,7 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
+	uint16	prchildstatus[NPROC];
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

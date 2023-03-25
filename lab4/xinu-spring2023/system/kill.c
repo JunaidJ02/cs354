@@ -34,6 +34,13 @@ syscall	kill(
 	switch (prptr->prstate) {
 	case PR_CURR:
 		prptr->prstate = PR_FREE;	/* Suicide */
+		struct	procent *parentptr;
+		parentptr = &proctab[prptr->prparent];
+		if (parentptr->prchildstatus[pid] == 2) {
+			prptr->prstate = PR_READY;
+			ready(prptr->prparent);
+			parentptr->prchildstatus[pid] == 4;
+		}
 		resched();
 
 	case PR_SLEEP:
