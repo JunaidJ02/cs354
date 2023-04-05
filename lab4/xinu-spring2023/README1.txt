@@ -32,3 +32,5 @@ Modified Functions:
       - We check if the child process has finished
       - If it has, we return the PID of the child process
       - Otherwise, we return SYSERR
+
+  TODO: Talk about the changes to the process table

@@ -6,12 +6,6 @@
  */
 #include <icu.s>
 
-		.data
-		.extern globalCBF
-		.extern globalEAX
-		.extern globalEBX
-		.extern globalECX
-
 		.text
 		.globl	clkdisp		# Clock interrupt dispatcher
 clkdisp:
