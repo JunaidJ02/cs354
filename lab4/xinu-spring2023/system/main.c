@@ -3,6 +3,7 @@
 #include <xinu.h>
 
 void wasteTime(void);
+void wasteMoreTime(void);
 void testXChildWaitBlocking(void);
 void testXChildWaitNonBlocking(void);
 void testAsyncChildCallbackFunction(void);
@@ -13,20 +14,22 @@ pid32 childFunctionPID = 0;
 process main(void)
 {
     recvclr();
-
+    kprintf("\nMain PID: %d", getpid());
     // resume(create(testXChildWaitBlocking, INITSTK, 16, "Child process", 0));
-    // resume(create(testXChildWaitNonBlocking, INITSTK, 20, "Non blocking check", 0));
-    resume(create(testAsyncChildCallbackFunction, INITSTK, 20, "Async callback function check", 0));
+    resume(create(testXChildWaitNonBlocking, INITSTK, 20, "Non blocking check", 0));
+    // testAsyncChildCallbackFunction();
 
     return OK;
     
 }
 
-/* Passes */
+/* Part 3 - Test making blocking calls to xchildwait() - Passes */
 void testXChildWaitBlocking(void) {
     /* Create a child process */
     pid32 childProcess1 = create(wasteTime, INITSTK, 15, "Child process", 0);
-    pid32 childProcess2 = create(wasteTime, INITSTK, 15, "Child process", 0);
+    pid32 childProcess2 = create(wasteMoreTime, INITSTK, 15, "Child process", 0);
+    resume(childProcess1);
+    resume(childProcess2);
     /* Call xchildwait() as a blocking call and pass in the created child processes PID */
     pid32 returnVal1 = xchildwait(0, childProcess1);
     pid32 returnVal2 = xchildwait(0, childProcess2);
@@ -36,7 +39,7 @@ void testXChildWaitBlocking(void) {
     kprintf("\nDone with test, we should expect Done wasting time to be printed first and then the PID of the child process\n");
 }
 
-/* Passes */
+/* Part 3 - Test making non-blocking calls to xchildwait() - Passes */
 void testXChildWaitNonBlocking(void) {
     // Create a child process
     pid32 cpid = create(wasteTime, 1024, 21, "Child Process", 0);
@@ -54,6 +57,31 @@ void testXChildWaitNonBlocking(void) {
     kprintf("\nSecond call to xchildwait, expected: %d - acutal: %d\n", cpid, result);
 }
 
+/* Part 4 - Tests to ensure that the callback function runs after a child is terminated - Passes */
+void testAsyncChildCallbackFunction(void) {
+    if (cbchildregister(&callbackFunction) == SYSERR) {
+        kprintf("\n Failed to setup callback function\n");
+        return;
+    }
+
+    childFunctionPID = create(wasteTime, 1024, 20, "waste time", 0);
+    resume(childFunctionPID);
+    kprintf("\nFinished async call back\n");
+    while (1);
+}
+
+
+/* Helper function for part 4 that acts as the callback function*/
+void callbackFunction(void) {
+    int x;
+    kprintf("Current PID: %d", getpid());
+    x = xchildwait(0, childFunctionPID);
+    kprintf("Child process %d has terminated.\n", x);
+}
+
+/* Helper functions */
+
+/* Waste some time, around */
 void wasteTime(void) {
     kprintf("\nEntered wasteTime()\n");
     int i;
@@ -64,6 +92,8 @@ void wasteTime(void) {
     kprintf("\nDone wasting time\n");
 }
 
+
+/* Waste some more time, around */
 void wasteMoreTime(void) {
     kprintf("\nEntered wasteMoreTime()\n");
     int i;
@@ -74,19 +104,4 @@ void wasteMoreTime(void) {
     kprintf("\nDone wasting time\n");
 }
 
-void testAsyncChildCallbackFunction(void) {
-    if (cbchildregister(&callbackFunction) == SYSERR) {
-        kprintf("\n Failed to setup callback function\n");
-        return;
-    }
 
-    childFunctionPID = create(wasteTime, 1024, 20, "waste time", 0);
-    resume(childFunctionPID);
-    while (1);
-}
-
-void callbackFunction(void) {
-    int x;
-    x = xchildwait(1, childFunctionPID);
-    kprintf("Child process %d has terminated.\n", x);
-}

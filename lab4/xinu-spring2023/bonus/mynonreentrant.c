@@ -3,7 +3,7 @@
 void mynonreentrant(void) {
     kprintf("\nStarting mynonreentrant()\n");
 
-    // Perform some computation
+    /* Do something to waste time */
     int i;
     for (i = 0; i < 5; i++) {
         kprintf("Computing... %d\n", i);

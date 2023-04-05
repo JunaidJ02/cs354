@@ -22,6 +22,9 @@ syscall xchildwait(uint16 call, pid32 cpid) {
             prparent->prchildstatus[cpid] = 2; /* Set child status to 2, child has not terminated and parent made a blocking call */
             resched(); /* Call resched so that the child process can start running */
             return cpid; /* Once the child process is complete, return the child process PID to the parent process */
+        } else if (cpid > 0 && cpid < NPROC && prchild->prstate == PR_FREE) { /* Check to see if the child is a valid PID and has already terminated */
+            /* We don't need to block since the child is already finished, therefore we return the childs pid */
+            return cpid; 
         }
     } else if (call == 1) { /* Non blocking call */
         if (prparent->prchildstatus[cpid] == 3) { /* If the child has already been terminated */

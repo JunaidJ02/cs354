@@ -25,13 +25,14 @@ clkdisp:
 		sti			# Restore interrupt status
 		popal			# Restore registers
 
+		# Check if there is a call back functiona associated with the process
 		cmpl $0, globalCBF 
 		je no_cfb
 
 		# Save the current eax
-		mov globalEAX, %eax
-		mov globalEBX, %ebx
-		mov globalECX, %ecx
+		movl %eax, globalEAX
+		movl %ebx, globalEBX
+		movl %ecx, globalECX
 		
 		# Get the EIP and save it in eax
 		pop %eax
@@ -51,6 +52,7 @@ clkdisp:
 		mov globalCBF, %eax
 		pushl %eax
 
+		# Reset the global call back function to nil
 		movl $0, globalCBF
 
 		# Reset all the registers back to their original values
@@ -60,5 +62,6 @@ clkdisp:
 		
 		iret			# Return from interrupt
 
+# If there was no call back function, just call iret
 no_cfb:
-	iret
+		iret			# Return from interrupt

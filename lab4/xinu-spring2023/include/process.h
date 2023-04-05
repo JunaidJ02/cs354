@@ -40,6 +40,9 @@
 
 #define NDESC		5	/* must be odd to make procent 4N bytes	*/
 
+#define XINUTEST	1
+#define XINUDEBUG	1
+
 /* Definition of the process table (multiple of 32 bits) */
 
 struct procent {		/* Entry in the process table		*/
