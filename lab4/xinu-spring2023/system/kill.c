@@ -51,12 +51,13 @@ syscall	kill(
 			} else if (parentptr->prchildstatus[pid] == 1) {
 				/* Set the status of the child process to 3, terminated without blocking */
 				parentptr->prchildstatus[pid] = 3;
-				/* Reset child so that it is no longer a process */
+				/* Reset child so that it is no longer a process in the process list */
 				prptr->prstate = PR_FREE;
 				prptr->prprio = 0;
 				if (prptr->prchildcount != 0) {
 					/* Loop over all children of this process */
 					for(j = 0; j < NPROC; j++) {
+						/* Get the PID and then the child struct */
 						currChildPID = prptr->prchildpid[j];
 						currChild = &proctab[currChildPID];
 						/* Set the parent of the child process to 0 since the parent is now dead */
