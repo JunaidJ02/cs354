@@ -3,11 +3,11 @@ Lab 4 - Part 3 - Junaid Javed
 Modified Functions: 
   kill.c
     - In Kill, I added some additional code to handle the termination of child processes. 
-    - When a process is being killed via kill(), we check its status via the prchildstatus[cpid] of its parent. 
+    - When a process is being killed via kill(), we check its status via the prchildstatus[cpid] from its parent process. 
     - If the status is 1:
       - We change the status to 3 (terminated without blocking) since the child is now terminated
       - Remove the child process from the process table
-      - Reset the parent of all child processes of the process being killed to the null process
+      - Reset the parent of all child processes of the process being killed to the null process (0)
     - If the status is 2:
       - This means that the parent is waiting for this child to finish
       - Now that it has finished, we can ready and resume the parent process (i.e. unblock the parent process)

@@ -27,8 +27,12 @@ clkdisp:
 
 		# Check if there is a call back functiona associated with the process
 		cmpl $0, globalCBF 
-		je no_cfb
+		jne cfb
 
+		iret			# Return from interrupt
+
+# If there was no call back function, just call iret
+cfb:
 		# Save the current eax
 		movl %eax, globalEAX
 		movl %ebx, globalEBX
@@ -60,8 +64,4 @@ clkdisp:
 		movl globalEBX, %ebx
 		movl globalECX, %ecx
 		
-		iret			# Return from interrupt
-
-# If there was no call back function, just call iret
-no_cfb:
 		iret			# Return from interrupt
