@@ -10,10 +10,9 @@ void parent_0(void);
 process main(void)
 {
     recvclr();
-    // resume(create(testXChildWaitBlocking, INITSTK, 16, "Child process", 0));
 
-    // resume(create(parent_0, 1024, 20, "Blocking check", 0));
-    resume(create(testXChildWaitNonBlocking, 1024, 20, "Non blocking check", 0));
+    resume(create(testXChildWaitBlocking, INITSTK, 16, "Child process", 0));
+    resume(create(testXChildWaitNonBlocking, INITSTK, 20, "Non blocking check", 0));
 
     return OK;
     
