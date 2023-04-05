@@ -64,6 +64,16 @@ void wasteTime(void) {
     kprintf("\nDone wasting time\n");
 }
 
+void wasteMoreTime(void) {
+    kprintf("\nEntered wasteMoreTime()\n");
+    int i;
+    int j = 0;
+    for (i = 0; i < 99999999; i++) {
+        j *= i;
+    }
+    kprintf("\nDone wasting time\n");
+}
+
 void testAsyncChildCallbackFunction(void) {
     if (cbchildregister(&callbackFunction) == SYSERR) {
         kprintf("\n Failed to setup callback function\n");

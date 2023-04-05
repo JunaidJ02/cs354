@@ -20,7 +20,7 @@ syscall xchildwait(uint16 call, pid32 cpid) {
         if (cpid > 0 && !isbadpid(cpid)) { /* Check that its not the null process */
             prparent->prstate = PR_CHLDWAIT; /* Set parents status to waiting on child */
             prparent->prchildstatus[cpid] = 2; /* Set child status to 2, child has not terminated and parent made a blocking call */
-            resume(cpid); /* Resume the child process */
+            resched(); /* Call resched so that the child process can start running */
             return cpid; /* Once the child process is complete, return the child process PID to the parent process */
         }
     } else if (call == 1) { /* Non blocking call */
