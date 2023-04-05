@@ -53,6 +53,7 @@ pid32	create(
 	
 	/* Initalize child count to 0*/
 	prptr->prchildcount = 0;
+	prptr->cbf = NULL;
 
 	/* Get the processes parent */
 	parentptr = &proctab[prptr->prparent];

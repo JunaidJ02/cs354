@@ -12,8 +12,8 @@
         - If the child process is complete, return cpid
 */
 syscall xchildwait(uint16 call, pid32 cpid) {
-    struct procent *prchild; /* Parent process */
-    struct procent *prparent; /* Child process */
+    struct procent *prchild; /* Child process */
+    struct procent *prparent; /* Parent process */
     prchild = &proctab[cpid]; /* Get child process */
     prparent = &proctab[prchild->prparent]; /* Get parent process */
     if (call == 0) { /* Blocking call */

@@ -57,6 +57,7 @@ struct procent {		/* Entry in the process table		*/
 	uint32 	prchildcount; /* Number of child processes */
 	pid32 	prchildpid[NPROC]; /* PID of child processes */
 	uint16	prchildstatus[NPROC]; /* Status of child processes */
+	void 	(*cbf)(void); /* Callback function if one is set */
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
