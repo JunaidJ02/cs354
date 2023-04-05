@@ -13,6 +13,9 @@ syscall	kill(
 	intmask	mask;			/* Saved interrupt mask		*/
 	struct	procent *prptr;		/* Ptr to process's table entry	*/
 	int32	i;			/* Index into descriptors	*/
+	pid32 currChildPID; /* PID of the current child, used for looping over all children of parent */
+	struct	procent *currChild; /* The current child process, used for looping over all children of parent */
+	int j;  /* Looping variable */
 
 	mask = disable();
 	if (isbadpid(pid) || (pid == NULLPROC)
@@ -45,6 +48,21 @@ syscall	kill(
 				ready(prptr->prparent);
 				/* Set the status of the child process to 4, terminated */
 				parentptr->prchildstatus[pid] == 4;
+			} else if (parentptr->prchildstatus[pid] == 1) {
+				/* Set the status of the child process to 3, terminated without blocking */
+				parentptr->prchildstatus[pid] = 3;
+				/* Reset child so that it is no longer a process */
+				prptr->prstate = PR_FREE;
+				prptr->prprio = 0;
+				if (prptr->prchildcount != 0) {
+					/* Loop over all children of this process */
+					for(j = 0; j < NPROC; j++) {
+						currChildPID = prptr->prchildpid[j];
+						currChild = &proctab[currChildPID];
+						/* Set the parent of the child process to 0 since the parent is now dead */
+						currChild->prparent = 0;
+					}
+				}
 			}
 		}
 		resched();

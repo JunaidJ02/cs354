@@ -52,9 +52,11 @@ struct procent {		/* Entry in the process table		*/
 	sid32	prsem;		/* Semaphore on which process waits	*/
 	pid32	prparent;	/* ID of the creating process		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
-	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
+	bool8	prhasmsg;	/* Nonzero if msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
-	uint16	prchildstatus[NPROC];
+	uint32 	prchildcount; /* Number of child processes */
+	pid32 	prchildpid[NPROC]; /* PID of child processes */
+	uint16	prchildstatus[NPROC]; /* Status of child processes */
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

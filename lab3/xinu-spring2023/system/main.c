@@ -13,7 +13,6 @@ void testDynamicSchedC(void);
 void testDynamicSchedD(void);
 void testBonus(void);
 
-volatile extern int msclkcounter2;
 
 process	main(void)
 {

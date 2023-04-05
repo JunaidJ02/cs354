@@ -21,6 +21,7 @@ pid32	create(
 	intmask 	mask;    	/* Interrupt mask		*/
 	pid32		pid;		/* Stores new process id	*/
 	struct	procent	*prptr;		/* Pointer to proc. table entry */
+	struct	procent	*parentptr;		/* Pointer to parents proc. table entry */
 	int32		i;
 	uint32		*a;		/* Points to list of args	*/
 	uint32		*saddr;		/* Stack address		*/
@@ -49,6 +50,18 @@ pid32	create(
 	prptr->prsem = -1;
 	prptr->prparent = (pid32)getpid();
 	prptr->prhasmsg = FALSE;
+	
+	/* Initalize child count to 0*/
+	prptr->prchildcount = 0;
+
+	/* Get the processes parent */
+	parentptr = &proctab[prptr->prparent];
+	/* Set the pid of the child inside prchildpid for the parent */
+	parentptr->prchildpid[parentptr->prchildcount] = pid;
+	/* Set the status of the child ot 1*/
+	parentptr->prchildstatus[pid] = 1;
+	/* Update the child count for the parent process */
+	parentptr->prchildcount++;
 
 	/* Set up stdin, stdout, and stderr descriptors for the shell	*/
 	prptr->prdesc[0] = CONSOLE;

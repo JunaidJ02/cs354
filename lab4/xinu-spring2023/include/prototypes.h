@@ -1,6 +1,9 @@
 /* in file mymotd.c */
 extern	void	mymotd(void);
 
+/* in xchildwait.c */
+extern 	syscall xchildwait(uint16 call, pid32 cpid);
+
 /* in file addargs.c */
 extern	status	addargs(pid32, int32, int32[], int32,char *, void *);
 
