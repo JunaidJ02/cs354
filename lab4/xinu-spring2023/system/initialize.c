@@ -25,6 +25,10 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
+void 	(*globalCBF)(void); /* Global call back function */
+char	*globalEAX; /* Global EAX used as a temp variable */
+char	*globalEBX; /* Global EBX used as a temp variable */
+char	*globalECX; /* Global ECX used as a temp variable */
 
 /* Control sequence to reset the console colors and cusor positiion	*/
 
@@ -175,6 +179,9 @@ static	void	sysinit()
 	/* Count the Null process as the first process in the system */
 
 	prcount = 1;
+
+	/* Initialize the global callback function to 0 (null) */
+	globalCBF = 0;
 
 	/* Scheduling is not currently blocked */
 

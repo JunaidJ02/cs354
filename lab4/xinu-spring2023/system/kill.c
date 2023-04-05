@@ -6,6 +6,8 @@
  *  kill  -  Kill a process and remove it from the system
  *------------------------------------------------------------------------
  */
+
+extern  void (*globalCBF)(void);
 syscall	kill(
 	  pid32		pid		/* ID of process to kill	*/
 	)
@@ -22,6 +24,12 @@ syscall	kill(
 	    || ((prptr = &proctab[pid])->prstate) == PR_FREE) {
 		restore(mask);
 		return SYSERR;
+	}
+
+	struct	procent *parentptr;
+	parentptr = &proctab[prptr->prparent];
+	if (parentptr->cbf != NULL) {
+		globalCBF = parentptr->cbf;
 	}
 
 	if (--prcount <= 1) {		/* Last user process completes	*/

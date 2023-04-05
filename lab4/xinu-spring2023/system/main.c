@@ -8,12 +8,15 @@ void testXChildWaitNonBlocking(void);
 void testAsyncChildCallbackFunction(void);
 void callbackFunction(void);
 
+pid32 childFunctionPID = 0;
+
 process main(void)
 {
     recvclr();
 
     // resume(create(testXChildWaitBlocking, INITSTK, 16, "Child process", 0));
     // resume(create(testXChildWaitNonBlocking, INITSTK, 20, "Non blocking check", 0));
+    resume(create(testAsyncChildCallbackFunction, INITSTK, 20, "Async callback function check", 0));
 
     return OK;
     
@@ -55,7 +58,7 @@ void wasteTime(void) {
     kprintf("\nEntered wasteTime()\n");
     int i;
     int j = 0;
-    for (i = 0; i < 999999; i++) {
+    for (i = 0; i < 9999999; i++) {
         j *= i;
     }
     kprintf("\nDone wasting time\n");
@@ -63,10 +66,17 @@ void wasteTime(void) {
 
 void testAsyncChildCallbackFunction(void) {
     if (cbchildregister(&callbackFunction) == SYSERR) {
-
+        kprintf("\n Failed to setup callback function\n");
+        return;
     }
+
+    childFunctionPID = create(wasteTime, 1024, 20, "waste time", 0);
+    resume(childFunctionPID);
+    while (1);
 }
 
 void callbackFunction(void) {
-
+    int x;
+    x = xchildwait(1, childFunctionPID);
+    kprintf("Child process %d has terminated.\n", x);
 }
