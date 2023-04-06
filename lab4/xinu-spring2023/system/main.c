@@ -14,8 +14,14 @@ pid32 childFunctionPID = 0;
 process main(void)
 {
     recvclr();
-    resume(create(testXChildWaitBlocking, INITSTK, 16, "Child process", 0));
+    
+    /* Testing blocking call */
+    // resume(create(testXChildWaitBlocking, INITSTK, 16, "Child process", 0));
+
+    /* Test non-blocking call */
     // resume(create(testXChildWaitNonBlocking, INITSTK, 20, "Non blocking check", 0));
+    
+    /* Testing async callbackfunction */
     // testAsyncChildCallbackFunction();
 
     return OK;
