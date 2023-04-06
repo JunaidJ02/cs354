@@ -4,7 +4,6 @@
 
 void testBonus(void);
 void childProcess(void);
-void callbackFunction(void);
 
 process main(void)
 {
@@ -15,7 +14,7 @@ process main(void)
 }
 
 void testBonus(void) {
-    if (cbchildregister(&callbackFunction) == SYSERR) {
+    if (cbchildregister(&childcb) == SYSERR) {
         #if XINUDEBUG == 1
             kprintf("\n Failed to setup callback function\n");
         #endif
@@ -30,18 +29,3 @@ void testBonus(void) {
 void childProcess(void) {
     return;
 }
-
-void callbackFunction(void) {
-    // Perform some callback operation
-    #if XINUDEBUG == 1
-        printf("Callback: Performing operation\n");
-    #endif
-
-    // Call mynonreentrant()
-    mynonreentrant();
-
-    #if XINUDEBUG == 1
-        printf("Callback: Finished\n");
-    #endif
-}
-

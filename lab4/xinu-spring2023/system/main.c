@@ -14,9 +14,9 @@ pid32 childFunctionPID = 0;
 process main(void)
 {
     recvclr();
-    // resume(create(testXChildWaitBlocking, INITSTK, 16, "Child process", 0));
+    resume(create(testXChildWaitBlocking, INITSTK, 16, "Child process", 0));
     // resume(create(testXChildWaitNonBlocking, INITSTK, 20, "Non blocking check", 0));
-    testAsyncChildCallbackFunction();
+    // testAsyncChildCallbackFunction();
 
     return OK;
     
@@ -125,5 +125,4 @@ void wasteMoreTime(void) {
         kprintf("\nDone wasting time\n");
     #endif
 }
-
 

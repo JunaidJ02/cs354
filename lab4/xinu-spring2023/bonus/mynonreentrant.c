@@ -9,7 +9,7 @@ void mynonreentrant(void) {
     int i;
     for (i = 0; i < 5; i++) {
         #if XINUDEBUG == 1
-            kprintf("Computing... %d\n", i);
+            kprintf("mynonreentrant... %d\n", i);
         #endif
         sleep(3);
     }

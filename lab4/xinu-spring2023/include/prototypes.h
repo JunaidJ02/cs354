@@ -7,8 +7,11 @@ extern 	syscall xchildwait(uint16 call, pid32 cpid);
 /* in cbchildregister.c */
 extern	syscall cbchildregister(void (* cbf) (void));
 
-/* in mynonreentrant.c */
+/* in bonus/mynonreentrant.c */
 extern	void mynonreentrant(void);
+
+/* in bonus/childcb.c */
+extern	void childcb(void);
 
 /* in file addargs.c */
 extern	status	addargs(pid32, int32, int32[], int32,char *, void *);
