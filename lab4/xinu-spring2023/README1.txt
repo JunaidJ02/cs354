@@ -1,6 +1,13 @@
 Lab 4 - Part 3 - Junaid Javed
 
 Modified Functions: 
+  process.h
+    - I added a few different entries to the process table
+    - prchildcount: This keeps track of the number of children that a process has
+    - prchildpid: This holds the pid of each of the children of the process
+    - prchildstatus: This keeps track of the status of each of the children of the process
+    - cbf: The call back function associted with this function (i.e., All child processes run the callback function of their parent upon termination)
+
   kill.c
     - In Kill, I added some additional code to handle the termination of child processes. 
     - When a process is being killed via kill(), we check its status via the prchildstatus[cpid] from its parent process. 
@@ -32,5 +39,3 @@ Modified Functions:
       - We check if the child process has finished
       - If it has, we return the PID of the child process
       - Otherwise, we return SYSERR
-
-  TODO: Talk about the changes to the process table
