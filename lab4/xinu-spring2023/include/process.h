@@ -16,6 +16,8 @@
 #define	PR_SUSP		5	/* Process is suspended			*/
 #define	PR_WAIT		6	/* Process is on semaphore queue	*/
 #define	PR_RECTIM	7	/* Process is receiving with timeout	*/
+#define PR_CHLDWAIT	8	/* Process is blocking from xchildwait() */
+
 
 /* Miscellaneous process definitions */
 
@@ -38,6 +40,9 @@
 
 #define NDESC		5	/* must be odd to make procent 4N bytes	*/
 
+#define XINUTEST	1
+#define XINUDEBUG	1
+
 /* Definition of the process table (multiple of 32 bits) */
 
 struct procent {		/* Entry in the process table		*/
@@ -50,8 +55,12 @@ struct procent {		/* Entry in the process table		*/
 	sid32	prsem;		/* Semaphore on which process waits	*/
 	pid32	prparent;	/* ID of the creating process		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
-	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
+	bool8	prhasmsg;	/* Nonzero if msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
+	uint32 	prchildcount; /* Number of child processes */
+	pid32 	prchildpid[NPROC]; /* PID of child processes */
+	uint16	prchildstatus[NPROC]; /* Status of child processes */
+	void 	(*cbf)(void); /* Callback function if one is set */
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
