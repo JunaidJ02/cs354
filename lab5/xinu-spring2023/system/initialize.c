@@ -26,6 +26,12 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
 
+void	(*globalCBF)(void); /* Global variable to store the callback function that will be triggered */
+char	*globalEAX; /* Global EAX used as a temp variable */
+char	*globalEBX; /* Global EBX used as a temp variable */
+char	*globalECX; /* Global ECX used as a temp variable */
+char	*globalEDX; /* Global EDX used as a temp variable */
+
 /* Control sequence to reset the console colors and cusor positiion	*/
 
 #define	CONSOLE_RESET	" \033[0m\033[2J\033[;H"
@@ -84,11 +90,11 @@ void	nulluser()
 	//net_init();
 
 	/* Create a process to finish startup and start main */
+	mymotd();
 
 	resume(create((void *)startup, INITSTK, INITPRIO,
 					"Startup process", 0, NULL));
 
-	mymotd();
 
 	/* Become the Null process (i.e., guarantee that the CPU has	*/
 	/*  something to run when no other process is ready to execute)	*/
@@ -175,6 +181,9 @@ static	void	sysinit()
 	/* Count the Null process as the first process in the system */
 
 	prcount = 1;
+
+	/* Initialize the global callback function to 0 (null) */
+	globalCBF = 0;
 
 	/* Scheduling is not currently blocked */
 

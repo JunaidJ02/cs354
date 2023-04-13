@@ -143,6 +143,10 @@ char *inames[] = {
 	"coprocessor error"
 };
 
+void testDetour() {
+	kprintf("testing w detour....\n");
+}
+
 /*------------------------------------------------------------------------
  * trap  -  print debugging info when a trap occurrs
  *------------------------------------------------------------------------

@@ -1,5 +1,8 @@
 /* Junaid's additions */
 
+/* in file cbcpuxregister.c */
+extern	syscall cbcpuxregister(void (* cbf) (void), uint32 cputhr);
+
 /* in file mymotd.c */
 extern	void	mymotd(void);
 

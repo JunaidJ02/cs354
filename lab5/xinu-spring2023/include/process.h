@@ -52,6 +52,9 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
+	uint32	prcpu; /* CPU usage (in unit of msec) */
+	uint32	cputhreshold; /* Threshold for when we should trigger callback function */
+	void	(*cbf)(void); /* Callback function */
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
@@ -60,3 +63,4 @@ struct procent {		/* Entry in the process table		*/
 extern	struct	procent proctab[];
 extern	int32	prcount;	/* Currently active processes		*/
 extern	pid32	currpid;	/* Currently executing process		*/
+volatile uint32	currcpu; 	/* CPU usage of the currently executing process */

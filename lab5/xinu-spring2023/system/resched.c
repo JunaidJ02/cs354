@@ -35,12 +35,15 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 		insert(currpid, readylist, ptold->prprio);
 	}
 
-	/* Force context switch to highest priority ready process */
+	/* Update prcpu */
+	ptold->prcpu = ptold->prcpu + currcpu;
 
+	/* Force context switch to highest priority ready process */
 	currpid = dequeue(readylist);
 	ptnew = &proctab[currpid];
 	ptnew->prstate = PR_CURR;
 	preempt = QUANTUM;		/* Reset time slice for process	*/
+	currcpu = 0;
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
 
 	/* Old process returns here when resumed */
