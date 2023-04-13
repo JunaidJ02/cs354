@@ -38,6 +38,10 @@ pid32	create(
 	prcount++;
 	prptr = &proctab[pid];
 
+	/* Bonus */
+	prptr->prnummemblk = 0;
+	/* Bonus */
+
 	/* Initialize process table entry for new process */
 	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/
 	prptr->prprio = priority;

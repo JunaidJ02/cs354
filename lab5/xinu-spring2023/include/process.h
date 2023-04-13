@@ -38,6 +38,13 @@
 
 #define NDESC		5	/* must be odd to make procent 4N bytes	*/
 
+/* Bonus */
+struct allocatedmem {
+	char *membegin;
+	uint32 len;
+};
+
+
 /* Definition of the process table (multiple of 32 bits) */
 
 struct procent {		/* Entry in the process table		*/
@@ -57,6 +64,9 @@ struct procent {		/* Entry in the process table		*/
 	void	(*cpuCBF)(void); /* CPUX Callback function */
 	uint32	wallthreshold; /* Threshold for when we should trigger WALLX callback function */
 	void	(*wallCBF)(void); /* WALLX Callback function */
+	/* Bonus */
+	struct allocatedmem prallocmem[20]; /* Bookkeeping of allocated memory */
+	uint16 prnummemblk; /* Number of allocated memory blocks */
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
