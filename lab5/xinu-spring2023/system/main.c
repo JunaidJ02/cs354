@@ -2,25 +2,32 @@
 
 #include <xinu.h>
 void testCPUXRegister();
-void CPU3200Check();
-void CPU3700Check();
+void CPU50Check();
+void CPU600Check();
 void CPU4000Check();
 void CPU4500Check();
 
 void testWALLXRegister();
 void WALL1000Check();
 void WALL2000Check();
-void WALL5000Check();
+void WALL4000Check();
 
 void testBothRegisters();
+void testFailRegistration();
+void failRegistrationHelper();
+
+uint32 score = 0;
 
 process	main(void)
 {
 	#if XINUTEST == 1
-		testWALLXRegister();
-		testCPUXRegister();
-		testBothRegisters();
+		resume(create(testWALLXRegister, INITSTK, 24, "testWALLXRegister", 0, NULL));
+		resume(create(testCPUXRegister, INITSTK, 23, "testCPUXRegister", 0, NULL));
+		resume(create(testBothRegisters, INITSTK, 22, "testBothRegisters", 0, NULL));
+		resume(create(testFailRegistration, INITSTK, 21, "testFailRegistration", 0, NULL));
 	#endif
+
+	kprintf("Score: %d/10", score);
 
 	while(1);
 	return OK;   
@@ -29,8 +36,11 @@ process	main(void)
 /* ----------- WALLXRegister Tests Start ----------- */
 
 void testWALLXRegister() {
+	if (cbcpuxregister(&WALL1000Check, 1000) == SYSERR) {
+		kprintf("Test 1: An error occured trying to set callback function");
+	}
 	kprintf("Running Test 1:\n");
-	if (cbcpuxregister(&WALL1000Check, 994) == SYSERR) {
+	if (cbcpuxregister(&WALL1000Check, 1000) == SYSERR) {
 		kprintf("Test 1: An error occured trying to set callback function");
 	}
 
@@ -47,7 +57,7 @@ void testWALLXRegister() {
 
 void testCPUXRegister() {
 	kprintf("Running Test 3:\n");
-	if (cbcpuxregister(&CPU3200Check, 3200) == SYSERR) {
+	if (cbcpuxregister(&CPU50Check, 50) == SYSERR) {
 		kprintf("Test 3: An error occured trying to set callback function\n");
 	}
 	int i;
@@ -56,7 +66,7 @@ void testCPUXRegister() {
 		j *= i;
 	}
 	kprintf("Running Test 4:\n");
-	if (cbcpuxregister(&CPU3700Check, 3700) == SYSERR) {
+	if (cbcpuxregister(&CPU600Check, 600) == SYSERR) {
 		kprintf("Test 4: An error occured trying to set callback function\n");
 	}
 	for (i = 0; i < 9999999; i++) {
@@ -70,12 +80,12 @@ void testCPUXRegister() {
 
 void testBothRegisters() {
 	kprintf("Running Test 5:\n");
-	if (cbcpuxregister(&CPU4000Check, 4000) == SYSERR) {
-		kprintf("Test 5: An error occured trying to set callback function\n");
+	if (cbcpuxregister(&CPU50Check, 50) == SYSERR) {
+		kprintf("Test 5: An error occured trying to set callback function\n\n");
 	}
 
-	if (cbwallxregister(&WALL5000Check, 4999) == SYSERR) {
-		kprintf("Test 6: An error occured trying to set callback function\n");
+	if (cbwallxregister(&WALL4000Check, 4000) == SYSERR) {
+		kprintf("Test 6: An error occured trying to set callback function\n\n");
 	}
 
 	int i;
@@ -84,32 +94,82 @@ void testBothRegisters() {
 		j *= i;
 	}
 }
+
+void testFailRegistration() {
+	kprintf("Running Test 7:\n");
+	kprintf("Expected: Fail\n");
+	if (cbcpuxregister(&failRegistrationHelper, 9999999999) == SYSERR) {
+		kprintf("Actual: Fail\n\n");
+		score += 1;
+	} else {
+		kprintf("Actual: Pass\n\n");
+	}
+
+	kprintf("Running Test 8:\n");
+	kprintf("Expected: Fail\n");
+	if (cbcpuxregister(&failRegistrationHelper, -10) == SYSERR) {
+		kprintf("Actual: Fail\n\n");
+		score += 1;
+	} else {
+		kprintf("Actual: Pass\n\n");
+	}
+	
+	kprintf("Running Test 9:\n");
+	kprintf("Expected: Fail\n");
+	if (cbcpuxregister(&failRegistrationHelper, cpuusage(currpid) - 1) == SYSERR) {
+		kprintf("Actual: Fail\n\n");
+		score += 1;
+	} else {
+		kprintf("Actual: Pass\n\n");
+	}
+
+	kprintf("Running Test 10:\n");
+	kprintf("Expected: Fail\n");
+	if (cbwallxregister(&failRegistrationHelper, ctr1000 - 1) == SYSERR) {
+		kprintf("Actual: Fail\n\n");
+		score += 1;
+	} else {
+		kprintf("Actual: Pass\n\n");
+	}
+}
 /* ----------- Robustness Tests End ----------- */
 
 /* ----------- Helper Functions Start ----------- */
 
-void CPU3200Check() {
+void CPU50Check() {
 	uint32 usage = cpuusage(currpid);
-	kprintf("Expected: 3200\nActual: %d\n\n", usage);
+	kprintf("Expected: 50\nActual: %d\n\n", usage);
+	if (usage > 40 && usage < 60) {
+		score += 1;
+	}
 	return;
 }
 
-void CPU3700Check() {
+void CPU600Check() {
 	uint32 usage = cpuusage(currpid);
-	kprintf("Expected: 3700\nActual: %d\n\n", usage);
+	kprintf("Expected: 600\nActual: %d\n\n", usage);
+	if (usage > 590 && usage < 610) {
+		score += 1;
+	}
 	return;
 }
 
 void CPU4000Check() {
 	uint32 usage = cpuusage(currpid);
 	kprintf("Expected: 4000\nActual: %d\n\n", usage);
+	if (usage > 3990 && usage < 4010) {
+		score += 1;
+	}
 	return;
 }
 
 void WALL1000Check() {
 	kprintf("Expected: 1000\nActual: %d\n\n", ctr1000);
+	if (ctr1000 > 990 && ctr1000 < 1010) {
+		score += 1;
+	}
 	kprintf("Running Test 2:\n");
-	if (cbcpuxregister(&WALL2000Check, 1994) == SYSERR) {
+	if (cbcpuxregister(&WALL2000Check, 2000) == SYSERR) {
 		kprintf("Test 2: An error occured trying to set callback function");
 	}
 	return;
@@ -117,12 +177,22 @@ void WALL1000Check() {
 
 void WALL2000Check() {
 	kprintf("Expected: 2000\nActual: %d\n\n", ctr1000);
+	if (ctr1000 > 1990 && ctr1000 < 2010) {
+		score += 1;
+	}
 	return;
 }
 
-void WALL5000Check() {
+void WALL4000Check() {
 	kprintf("Running Test 6:\n");
-	kprintf("Expected: 5000\nActual: %d\n\n", ctr1000);
+	kprintf("Expected: 4000\nActual: %d\n\n", ctr1000);
+	if (ctr1000 > 3990 && ctr1000 < 4010) {
+		score += 1;
+	}
+	return;
+}
+
+void failRegistrationHelper() {
 	return;
 }
 

@@ -23,7 +23,7 @@
 #define	NULLPROC	0	/* ID of the null process		*/
 
 #define XINUTEST	1
-#define XINUDEBUG	1
+#define XINUDEBUG 	0
 
 /* Process initialization constants */
 
