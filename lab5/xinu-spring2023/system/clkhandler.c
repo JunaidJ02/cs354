@@ -7,11 +7,11 @@
  *------------------------------------------------------------------------
  */
 volatile extern uint32 currcpu;
-extern  void (*globalCBF)(void);
+extern  void (*globalCPUCBF)(void);
+extern  void (*globalWALLCBF)(void);
 void	clkhandler()
 {
 	static	uint32	count1000 = 1000;	/* Count to 1000 ms	*/
-	globalCBF = NULL;
 
 	/* Increment the curr cpu usage time */
 	currcpu++;
@@ -19,8 +19,8 @@ void	clkhandler()
 	/* Trigger callback function if cpu usage is above threshold */
 	struct procent *prptr = &proctab[currpid];
 	if (prptr->cputhreshold != 0 && prptr->prcpu + currcpu >= prptr->cputhreshold) {
-		globalCBF = prptr->cbf;
-		prptr->cbf = NULL;
+		globalCPUCBF = prptr->cpuCBF;
+		prptr->cpuCBF = NULL;
 	}
 	
 	/* Decrement the ms counter, and see if a second has passed */
@@ -34,6 +34,13 @@ void	clkhandler()
 
 		count1000 = 1000;
 	}
+
+	uint32 msecElapsed = clktime * 1000 + (1000 - count1000);
+
+	if (prptr->wallthreshold != 0 && msecElapsed >= prptr->wallthreshold) {
+			globalWALLCBF = prptr->wallCBF;
+			prptr->wallCBF = NULL;
+		}
 
 	/* Handle sleeping processes if any exist */
 

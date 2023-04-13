@@ -3,6 +3,9 @@
 /* in file cbcpuxregister.c */
 extern	syscall cbcpuxregister(void (* cbf) (void), uint32 cputhr);
 
+/* in file cbwallxregister.c */
+extern	syscall cbwallxregister(void (* cbf) (void), uint32 wallthr);
+
 /* in file mymotd.c */
 extern	void	mymotd(void);
 

@@ -17,15 +17,15 @@ syscall cbcpuxregister(void (* cbf) (void), uint32 cputhr) {
             /* Update the threshold for when we trigger the callback function*/
             prptr->cputhreshold = cputhr;
             /* Set the callback function that will be triggered when cpu usage is above threshold */
-            prptr->cbf = cbf;
+            prptr->cpuCBF = cbf;
             /* Successfully set the callback function and threshold */
             return 0;
         } else {
-            kprintf("Requested threshold (%d) is above current cpu usage (%d)\n", cputhr, currCPUUsage);
+            kprintf("[CPUX] Requested threshold (%d) is above current cpu usage (%d)\n", cputhr, currCPUUsage);
             return SYSERR;
         }
     } else {
-        kprintf("Requested threshold (%d) is too small (0) or too large (8000) or cbdAddress (%08X) is not in text segment (%08X - %08X)\n", cputhr, cbfAddress, startText, endText);
+        kprintf("[CPUX] Requested threshold (%d) is too small (0) or too large (8000) or cbdAddress (%08X) is not in text segment (%08X - %08X)\n", cputhr, cbfAddress, startText, endText);
         return SYSERR;
     }
 

@@ -26,7 +26,8 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
 
-void	(*globalCBF)(void); /* Global variable to store the callback function that will be triggered */
+void	(*globalCPUCBF)(void); /* Global variable to store the callback function that will be triggered for CPUX */
+void	(*globalWALLCBF)(void); /* Global variable to store the callback function that will be triggered for CPUX */
 char	*globalEAX; /* Global EAX used as a temp variable */
 char	*globalEBX; /* Global EBX used as a temp variable */
 char	*globalECX; /* Global ECX used as a temp variable */
@@ -183,7 +184,8 @@ static	void	sysinit()
 	prcount = 1;
 
 	/* Initialize the global callback function to 0 (null) */
-	globalCBF = 0;
+	globalCPUCBF = 0;
+	globalWALLCBF = 0;
 
 	/* Scheduling is not currently blocked */
 
