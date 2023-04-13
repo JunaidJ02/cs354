@@ -21,11 +21,15 @@ syscall cbcpuxregister(void (* cbf) (void), uint32 cputhr) {
             /* Successfully set the callback function and threshold */
             return 0;
         } else {
-            kprintf("[CPUX] Requested threshold (%d) is above current cpu usage (%d)\n", cputhr, currCPUUsage);
+            #if XINUDEBUG == 1
+                kprintf("[CPUX] Requested threshold (%d) is above current cpu usage (%d)\n", cputhr, currCPUUsage);
+            #endif
             return SYSERR;
         }
     } else {
-        kprintf("[CPUX] Requested threshold (%d) is too small (0) or too large (8000) or cbdAddress (%08X) is not in text segment (%08X - %08X)\n", cputhr, cbfAddress, startText, endText);
+        #if XINUDEBUG == 1
+            kprintf("[CPUX] Requested threshold (%d) is too small (0) or too large (8000) or cbdAddress (%08X) is not in text segment (%08X - %08X)\n", cputhr, cbfAddress, startText, endText);
+        #endif
         return SYSERR;
     }
 

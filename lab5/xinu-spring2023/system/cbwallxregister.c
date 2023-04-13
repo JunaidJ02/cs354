@@ -8,7 +8,7 @@ syscall cbwallxregister(void (* cbf) (void), uint32 wallthr) {
     /* Get the current process */
     struct procent *prptr = &proctab[currpid];
     /* Confirm that the requested threshold is above the current clktime */
-    if (clktime < wallthr) {
+    if (ctr1000 < wallthr) {
         /* Update the threshold for when we trigger the callback function*/
         prptr->wallthreshold = wallthr;
         /* Set the callback function that will be triggered when clktime is above threshold */
@@ -16,8 +16,9 @@ syscall cbwallxregister(void (* cbf) (void), uint32 wallthr) {
         /* Successfully set the callback function and threshold */
         return 0;
     }
-
-    kprintf("[WALLX] Requested threshold (%d) is above clktime (%d)\n", wallthr, clktime);
+    #if XINUDEBUG == 1
+        kprintf("[WALLX] Requested threshold (%d) is above clktime (%d)\n", wallthr, clktime);
+    #endif
     return SYSERR;
 }
 

@@ -15,6 +15,7 @@ void	clkhandler()
 
 	/* Increment the curr cpu usage time */
 	currcpu++;
+	ctr1000++;
 
 	/* Trigger callback function if cpu usage is above threshold */
 	struct procent *prptr = &proctab[currpid];
@@ -35,11 +36,12 @@ void	clkhandler()
 		count1000 = 1000;
 	}
 
-	uint32 msecElapsed = clktime * 1000 + (1000 - count1000);
-
-	if (prptr->wallthreshold != 0 && msecElapsed >= prptr->wallthreshold) {
+	if (prptr->wallthreshold != 0 && ctr1000 >= prptr->wallthreshold) {
 			globalWALLCBF = prptr->wallCBF;
+			/* Reset callback function */
 			prptr->wallCBF = NULL;
+			/* Reset callback threshold*/
+			prptr->wallthreshold = 0;
 		}
 
 	/* Handle sleeping processes if any exist */

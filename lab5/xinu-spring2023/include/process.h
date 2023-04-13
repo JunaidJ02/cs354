@@ -22,6 +22,9 @@
 #define	PNMLEN		16	/* Length of process "name"		*/
 #define	NULLPROC	0	/* ID of the null process		*/
 
+#define XINUTEST	1
+#define XINUDEBUG	1
+
 /* Process initialization constants */
 
 #define	INITSTK		65536	/* Initial process stack size		*/
