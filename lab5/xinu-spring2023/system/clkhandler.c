@@ -19,9 +19,16 @@ void	clkhandler()
 
 	/* Trigger callback function if cpu usage is above threshold */
 	struct procent *prptr = &proctab[currpid];
-	if (prptr->cputhreshold != 0 && prptr->prcpu + currcpu >= prptr->cputhreshold) {
+	if (prptr->cpuCBF != NULL && prptr->prcpu + currcpu >= prptr->cputhreshold) {
+		kprintf("Triggering cpux callback function\n");
 		globalCPUCBF = prptr->cpuCBF;
 		prptr->cpuCBF = NULL;
+	}
+
+	if (prptr->wallCBF != NULL && ctr1000 >= prptr->wallthreshold) {
+		kprintf("Triggering wallx callback function\n");
+		globalWALLCBF = prptr->wallCBF;
+		prptr->wallCBF = NULL;
 	}
 	
 	/* Decrement the ms counter, and see if a second has passed */
@@ -35,14 +42,6 @@ void	clkhandler()
 
 		count1000 = 1000;
 	}
-
-	if (prptr->wallthreshold != 0 && ctr1000 >= prptr->wallthreshold) {
-			globalWALLCBF = prptr->wallCBF;
-			/* Reset callback function */
-			prptr->wallCBF = NULL;
-			/* Reset callback threshold*/
-			prptr->wallthreshold = 0;
-		}
 
 	/* Handle sleeping processes if any exist */
 

@@ -143,9 +143,30 @@ char *inames[] = {
 	"coprocessor error"
 };
 
-void testDetour() {
-	kprintf("testing w detour....\n");
+void test1() {
+	kprintf("\n1\n");
 }
+
+void test2() {
+	kprintf("\n2\n");
+}
+
+void test3() {
+	kprintf("\n3\n");
+}
+
+void test4() {
+	kprintf("\n4\n");
+}
+
+void test5() {
+	kprintf("\n5\n");
+}
+
+void printAddy(void	(*globalCPUCBF)(void)) {
+	kprintf("\nAddres: %d", globalCPUCBF);
+}
+
 
 /*------------------------------------------------------------------------
  * trap  -  print debugging info when a trap occurrs

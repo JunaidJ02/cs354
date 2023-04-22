@@ -14,6 +14,9 @@ syscall cbwallxregister(void (* cbf) (void), uint32 wallthr) {
         /* Set the callback function that will be triggered when ctr1000 is above threshold */
         prptr->wallCBF = cbf;
         /* Successfully set the callback function and threshold */
+        #if XINUDEBUG == 1
+                kprintf("[WALLX] Successfully set callback function for %d with threshold: %d. Current time: %d\n", currpid, wallthr, ctr1000);
+            #endif
         return 0;
     }
     #if XINUDEBUG == 1

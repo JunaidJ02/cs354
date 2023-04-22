@@ -7,45 +7,24 @@
 #include <icu.s>
     .text
     .globl	xdetour		# Clock interrupt dispatcher
+    
 xdetour:
-        # Add CPUX callback function
-        cmpl $0, globalCPUCBF 
-        jne cpuDetour
+    cli 
 
-        # Add WALLX callback function
-        cmpl $0, globalWALLCBF
-        jne wallDetour
+    call test1
+    
+    cmpl $0, globalCPUCBF
+    jne cpuDetour
 
-        ret             # Remove xdetour from stack and return to clkdisp
+    cmpl $0, globalWALLCBF 
+    jne wallDetour
+
+    sti
+    ret
 
 cpuDetour:
-
-    # Save the current registers
-    movl %eax, globalEAX
-    movl %ebx, globalEBX
-    movl %ecx, globalECX
-    movl %edx, globalEDX
-
-    # Get the next instruction and save it in eax
-    pop %eax
-    # Get the EIP and save it in ebx
-    pop %ebx
-    # Get the CS and save it in ecx
-    pop %ecx
-    # Get the EFLAGS and save it in edx
-    pop %edx
-
-    # Push the EIP onto the stack
-    pushl %ebx
-    # Push the EFLAGS onto the stack
-    pushl %edx
-    # Push the CS onto the stack
-    pushl %ecx
-    
-    
     # Push the call back function onto the stack
-    mov globalCPUCBF, %ebx
-    pushl %ebx
+    call globalCPUCBF
 
     # Reset the global call back function to nil
     movl $0, globalCPUCBF
@@ -53,66 +32,27 @@ cpuDetour:
     # Add WALLX callback function if both are present
     cmpl $0, globalWALLCBF
     jne addWallDetour
-
-    # Push the next instruction
-    pushl %eax
-
-    # Reset all the registers back to their original values
-    movl globalEAX, %eax
-    movl globalEBX, %ebx
-    movl globalECX, %ecx
-    movl globalEDX, %edx
-
-    ret             # Remove xdetour from stack and return to clkdisp
+    
+    sti
+    ret
 
 addWallDetour:
-    # Push the call back function onto the stack
-    mov globalWALLCBF, %ebx
-    pushl %ebx
+    # trigger the call back function onto the stack
+    call globalWALLCBF
 
     # Reset the global call back function to nil
     movl $0, globalWALLCBF
+
+    sti
+    ret
 
 wallDetour:
-
-    # Save the current registers
-    movl %eax, globalEAX
-    movl %ebx, globalEBX
-    movl %ecx, globalECX
-    movl %edx, globalEDX
-
-    # Get the next instruction and save it in eax
-    pop %eax
-    # Get the EIP and save it in ebx
-    pop %ebx
-    # Get the CS and save it in ecx
-    pop %ecx
-    # Get the EFLAGS and save it in edx
-    pop %edx
-
-    # Push the EIP onto the stack
-    pushl %ebx
-    # Push the EFLAGS onto the stack
-    pushl %edx
-    # Push the CS onto the stack
-    pushl %ecx
-    
-    
     # Push the call back function onto the stack
-    mov globalWALLCBF, %ebx
-    pushl %ebx
+    call globalWALLCBF
 
     # Reset the global call back function to nil
     movl $0, globalWALLCBF
 
-    # Push the next instruction
-    pushl %eax
-
-    # Reset all the registers back to their original values
-    movl globalEAX, %eax
-    movl globalEBX, %ebx
-    movl globalECX, %ecx
-    movl globalEDX, %edx
-
-    ret             # Remove xdetour from stack and return to clkdisp
+    sti
+    ret
 

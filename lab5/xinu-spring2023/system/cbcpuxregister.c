@@ -19,6 +19,9 @@ syscall cbcpuxregister(void (* cbf) (void), uint32 cputhr) {
             /* Set the callback function that will be triggered when cpu usage is above threshold */
             prptr->cpuCBF = cbf;
             /* Successfully set the callback function and threshold */
+            #if XINUDEBUG == 1
+                kprintf("[CPUX] Successfully set callback function for %d with threshold: %d. Current time: %d\n", currpid, cputhr, currCPUUsage);
+            #endif
             return 0;
         } else {
             #if XINUDEBUG == 1
